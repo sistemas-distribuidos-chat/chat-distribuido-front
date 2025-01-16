@@ -16,7 +16,7 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  background-color: #29454d;
   padding: 0.5rem 1rem;
   color: white;
   font-size: 1.2rem;

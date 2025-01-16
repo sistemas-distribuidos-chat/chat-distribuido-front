@@ -1,22 +1,39 @@
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import userAvatar from "../assets/user.png";
 
 // Container Principal
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: #f7f9fc;
+  background: #f5f5f5;
+  font-family: Arial, sans-serif;
 `;
 
 // Header
 const Header = styled.div`
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #29454d;
+  padding: 0.5rem 1rem;
   color: white;
-  padding: 1rem;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: bold;
-  text-align: center;
+`;
+
+// Botão fechar
+const CloseButton = styled.button`
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 // Lista de Chats
@@ -44,13 +61,7 @@ const ChatItem = styled.div`
 `;
 
 // Avatar
-const Avatar = styled.div`
-  background: #ddd;
-  color: #6a11cb;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const Avatar = styled.img`
   height: 50px;
   width: 50px;
   border-radius: 50%;
@@ -64,6 +75,7 @@ const ChatText = styled.div`
 
   .name {
     font-weight: bold;
+    font-size: 1rem;
     color: #333;
   }
 
@@ -77,9 +89,9 @@ const ChatList = () => {
   const navigate = useNavigate(); // Para navegação
 
   const chats = [
-    { id: 1, name: 'John Doe', lastMessage: 'Hey, how are you?' },
-    { id: 2, name: 'Jane Smith', lastMessage: 'Let’s catch up soon!' },
-    { id: 3, name: 'Work Group', lastMessage: 'Meeting tomorrow at 10AM' },
+    { id: 1, name: "Carlos Silva", lastMessage: "Oi, tudo bem?" },
+    { id: 2, name: "Ana Souza", lastMessage: "Vamos marcar um café!" },
+    { id: 3, name: "Grupo de Trabalho", lastMessage: "Reunião amanhã às 10h." },
   ];
 
   const openChat = (id) => {
@@ -88,11 +100,14 @@ const ChatList = () => {
 
   return (
     <Container>
-      <Header>Chats</Header>
+      <Header>
+        <span>Chats</span>
+        <CloseButton>&times;</CloseButton>
+      </Header>
       <ChatListContainer>
         {chats.map((chat) => (
           <ChatItem key={chat.id} onClick={() => openChat(chat.id)}>
-            <Avatar>{chat.name.charAt(0)}</Avatar>
+            <Avatar src={userAvatar} alt={chat.name} />
             <ChatText>
               <span className="name">{chat.name}</span>
               <span className="lastMessage">{chat.lastMessage}</span>
