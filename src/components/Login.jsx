@@ -8,7 +8,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  background-color: #1d1d1d;
 `;
 
 const FormWrapper = styled.div`
@@ -26,11 +26,12 @@ const FormWrapper = styled.div`
 `;
 const Title = styled.h2`
   margin-bottom: 1rem;
+  font-weight: bold;
   color: #333;
 `;
 
 const Input = styled.input`
-  width: 100%;
+  width: 93%;
   padding: 0.8rem;
   margin-bottom: 1rem;
   border: 1px solid #ddd;
@@ -46,6 +47,7 @@ const Button = styled.button`
   border: none;
   border-radius: 4px;
   font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
   transition: background 0.3s;
 
@@ -57,6 +59,7 @@ const Button = styled.button`
 const ErrorMessage = styled.p`
   color: red;
   font-size: 0.9rem;
+  font-weight: bold;
   margin-bottom: 1rem;
 `;
 

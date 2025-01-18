@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
+import logo from "../assets/logo.png";
 
 const SidebarContainer = styled.div`
   width: 250px;
@@ -38,9 +39,15 @@ const MenuItem = styled(NavLink)`
   }
 `;
 
+const Logo = styled.img`
+  width: 100px;
+  margin: 1rem auto;
+`;
+
 const Sidebar = () => {
   return (
     <SidebarContainer>
+      <Logo src={logo} alt="Logo" />
       <MenuItem to="/chats">Chats</MenuItem>
       <MenuItem to="/contatos">Contatos</MenuItem>
     </SidebarContainer>

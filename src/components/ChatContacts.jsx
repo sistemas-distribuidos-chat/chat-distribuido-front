@@ -5,7 +5,7 @@ import userAvatar from "../assets/user.png";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 96vh;
   background: #f5f5f5;
   font-family: Arial, sans-serif;
 `;
