@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import axios from "axios"; // Para chamadas de API
 import userAvatar from "../assets/user.png";
 
 // Container Principal
@@ -86,13 +88,25 @@ const ChatText = styled.div`
 `;
 
 const ChatList = () => {
-  const navigate = useNavigate(); // Para navegação
+  const navigate = useNavigate();
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const chats = [
-    { id: 1, name: "Carlos Silva", lastMessage: "Oi, tudo bem?" },
-    { id: 2, name: "Ana Souza", lastMessage: "Vamos marcar um café!" },
-    { id: 3, name: "Grupo de Trabalho", lastMessage: "Reunião amanhã às 10h." },
-  ];
+  // Buscar as mensagens do backend
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/messages"); // Ajuste a rota correta
+        setMessages(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar mensagens:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMessages();
+  }, []);
 
   const openChat = (id) => {
     navigate(`/chat/${id}`);
@@ -101,19 +115,25 @@ const ChatList = () => {
   return (
     <Container>
       <Header>
-        <span>Chats</span>
+        <span>Mensagens</span>
         <CloseButton>&times;</CloseButton>
       </Header>
       <ChatListContainer>
-        {chats.map((chat) => (
-          <ChatItem key={chat.id} onClick={() => openChat(chat.id)}>
-            <Avatar src={userAvatar} alt={chat.name} />
-            <ChatText>
-              <span className="name">{chat.name}</span>
-              <span className="lastMessage">{chat.lastMessage}</span>
-            </ChatText>
-          </ChatItem>
-        ))}
+        {loading ? (
+          <p>Carregando...</p>
+        ) : messages.length > 0 ? (
+          messages.map((msg) => (
+            <ChatItem key={msg._id} onClick={() => openChat(msg._id)}>
+              <Avatar src={userAvatar} alt={msg.username} />
+              <ChatText>
+                <span className="name">{msg.username}</span>
+                <span className="lastMessage">{msg.message}</span>
+              </ChatText>
+            </ChatItem>
+          ))
+        ) : (
+          <p>Nenhuma mensagem encontrada.</p>
+        )}
       </ChatListContainer>
     </Container>
   );

@@ -1,6 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
+import { io } from "socket.io-client";
 import enviarIcon from "../assets/enviar.png";
+
+// Conectar ao servidor WebSocket
+const socket = io("http://localhost:3000"); // Porta do backend
+
+// ID da sala fixa (mudar para dinâmica depois)
+const ROOM_ID = "grupo1";
 
 // Container Principal
 const Container = styled.div`
@@ -11,7 +18,7 @@ const Container = styled.div`
   font-family: Arial, sans-serif;
 `;
 
-// Header com Gradiente
+// Header
 const Header = styled.div`
   display: flex;
   align-items: center;
@@ -105,23 +112,36 @@ const Button = styled.button`
 `;
 
 const ChatWindow = () => {
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Olá! tudo bem?", isMine: false },
-    { id: 2, text: "Tudo bem e com você?", isMine: true },
-    {
-      id: 3,
-      text: "Estamos bem também! O que você está fazendo?",
-      isMine: false,
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+
+  useEffect(() => {
+    // Entrar na sala quando o componente for montado
+    socket.emit("join-room", ROOM_ID);
+
+    // Receber mensagens em tempo real
+    socket.on("receive-message", (message) => {
+      setMessages((prev) => [...prev, message]);
+    });
+
+    return () => {
+      socket.off("receive-message");
+    };
+  }, []);
 
   const sendMessage = () => {
     if (newMessage.trim()) {
-      setMessages([
-        ...messages,
-        { id: Date.now(), text: newMessage, isMine: true },
-      ]);
+      const messageData = {
+        roomId: ROOM_ID,
+        message: newMessage,
+        sender: "Usuário", // Mudar para usuário real depois
+      };
+
+      // Enviar a mensagem via WebSocket
+      socket.emit("send-message", messageData);
+
+      // Adicionar a mensagem na lista localmente (antes da resposta do servidor)
+      setMessages((prev) => [...prev, { ...messageData, isMine: true }]);
       setNewMessage("");
     }
   };
@@ -133,9 +153,9 @@ const ChatWindow = () => {
         <CloseButton>&times;</CloseButton>
       </Header>
       <MessagesContainer>
-        {messages.map((msg) => (
-          <Message key={msg.id} isMine={msg.isMine}>
-            {msg.text}
+        {messages.map((msg, index) => (
+          <Message key={index} isMine={msg.isMine}>
+            {msg.sender}: {msg.message}
           </Message>
         ))}
       </MessagesContainer>
