@@ -62,6 +62,8 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
+        with:
+          name: github-pages  # Define um nome correto para o artefato
 
   # Deployment job
   deploy:
