@@ -1,0 +1,102 @@
+# Sample workflow for building and deploying a Jekyll site to GitHub Pages
+name: Deploy Jekyll with GitHub Pages dependencies preinstalled
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Install Bundler
+        run: gem install bundler
+
+      - name: Install dependencies
+        run: |
+          if [ -f Gemfile ]; then
+            bundle install
+          else
+            echo "No Gemfile found, skipping bundle install."
+          fi
+
+      - name: Install Jekyll (if Gemfile is missing)
+        run: |
+          if [ ! -f Gemfile ]; then
+            echo "No Gemfile found, installing Jekyll globally..."
+            gem install jekyll
+          fi
+
+      - name: Build with Jekyll
+        run: |
+          if [ -f Gemfile ]; then
+            bundle exec jekyll build --destination ./_site
+          else
+            echo "No Gemfile found, running Jekyll globally..."
+            jekyll build --destination ./_site
+          fi
+        env:
+          GITHUB_PAGES: true
+
+      - name: List all symlinks
+        run: find ./_site -type l -exec ls -l {} \;
+
+      - name: Check large files
+        run: find ./_site -type f -size +100M -exec ls -lh {} \;
+
+      - name: Check total artifact size
+        run: du -sh ./_site
+
+      - name: Cleanup artifact directory
+        run: |
+          find ./_site -type l -delete  # Remove symlinks
+          find ./_site -type f -size +100M -delete  # Remove arquivos maiores que 100MB
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages
+          path: ./_site
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+
+      - name: List Files
+        run: ls -R
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
