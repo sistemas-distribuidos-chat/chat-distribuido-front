@@ -85,7 +85,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await chatService.register({ name, email, password });
+      await chatService.register(name, email, password);
       navigate('/login');
     } catch (err) {
       console.error(err);

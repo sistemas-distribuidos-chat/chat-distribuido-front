@@ -88,7 +88,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await chatService.login({ email, password });
+      const response = await chatService.login(email, password);
       // localStorage.setItem("token", response.data.token);
       cookies.set(null, "token-chat", response.data.token, {
         path: "/",
