@@ -50,7 +50,13 @@ jobs:
           fi
 
       - name: Build with Jekyll
-        run: bundle exec jekyll build --destination ./_site
+        run: |
+          if [ -f Gemfile ]; then
+            bundle exec jekyll build --destination ./_site
+          else
+            echo "No Gemfile found, running Jekyll globally..."
+            jekyll build --destination ./_site
+          fi
         env:
           GITHUB_PAGES: true
 
