@@ -1,3 +1,4 @@
+import cookies from "nookies";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
@@ -45,11 +46,18 @@ const Logo = styled.img`
 `;
 
 const Sidebar = () => {
+
+  //remover o token dos cookies
+  const logout = () => {
+    cookies.destroy(null, "token");
+  }
+
   return (
     <SidebarContainer>
       <Logo src={logo} alt="Logo" />
       <MenuItem to="/chats">Chats</MenuItem>
       <MenuItem to="/contatos">Contatos</MenuItem>
+      <MenuItem to="/" onClick={() => logout()}>Sair</MenuItem>
     </SidebarContainer>
   );
 };

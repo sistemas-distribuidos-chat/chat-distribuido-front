@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import { parseCookies } from "nookies";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios"; // Para chamadas de API
 import userAvatar from "../assets/user.png";
+import chatService from "../gateway/services/chatService";
 
 // Container Principal
 const Container = styled.div`
@@ -89,26 +91,38 @@ const ChatText = styled.div`
 
 const ChatList = () => {
   const navigate = useNavigate();
-  const [messages, setMessages] = useState([]);
+  // const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [contatos, setContatos] = useState([]);
+
+  const { "token-chat": token } = parseCookies();
+  const jwtDados = jwtDecode(token);
+
+  const listarContatos = async () => {
+    try {
+      const response = await chatService.getContatos(jwtDados.id);
+
+      if (Array.isArray(response.data.contacts)) {
+        setContatos(response.data.contacts);
+      } else {
+        console.error("Dados recebidos não são um array:", response.data);
+        setContatos([]);
+      }
+    } catch (error) {
+      alert("Erro ao buscar contatos:", error);
+      setContatos([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Buscar as mensagens do backend
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/api/messages"); // Ajuste a rota correta
-        setMessages(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar mensagens:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMessages();
+    listarContatos();
   }, []);
 
   const openChat = (id) => {
+    sessionStorage.setItem("contactId", id);
     navigate(`/chat/${id}`);
   };
 
@@ -121,12 +135,12 @@ const ChatList = () => {
       <ChatListContainer>
         {loading ? (
           <p>Carregando...</p>
-        ) : messages.length > 0 ? (
-          messages.map((msg) => (
+        ) : contatos.length > 0 ? (
+          contatos.map((msg) => (
             <ChatItem key={msg._id} onClick={() => openChat(msg._id)}>
-              <Avatar src={userAvatar} alt={msg.username} />
+              <Avatar src={userAvatar} alt={msg.name} />
               <ChatText>
-                <span className="name">{msg.username}</span>
+                <span className="name">{msg.name}</span>
                 <span className="lastMessage">{msg.message}</span>
               </ChatText>
             </ChatItem>

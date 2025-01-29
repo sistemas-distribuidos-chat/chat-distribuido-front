@@ -1,4 +1,5 @@
 import axios from "axios";
+import cookies from "nookies";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -91,7 +92,12 @@ const Login = () => {
         "http://localhost:3000/api/auth/login",
         { email, password }
       );
-      localStorage.setItem("token", response.data.token);
+      // localStorage.setItem("token", response.data.token);
+      cookies.set(null, "token-chat", response.data.token, {
+        path: "/",
+        sameSite: "lax",
+        maxAge: 30 * 24 * 60 * 60,
+      });
       navigate("/chats");
     } catch (err) {
       console.error(err);
