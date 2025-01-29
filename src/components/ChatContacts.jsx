@@ -42,17 +42,15 @@ const Button = styled.button`
   }
 `;
 
-// Ícone de Sino (Notificações)
 const NotificationBell = styled.span`
   font-size: 1.5rem;
-  cursor: pointer;
   position: relative;
-  margin-right: 1rem;
 
   &:hover {
     color: #ffcc00;
   }
 `;
+
 
 // Modal Estilizado
 const Modal = styled.div`
@@ -169,6 +167,34 @@ const DeclineButton = styled.button`
   }
 `;
 
+// Ícone de Sino com Contador de Notificações
+const NotificationWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+`;
+
+const NotificationBadge = styled.span`
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: red;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 50%;
+  min-width: 5px;
+  height: 5px;
+  line-height: 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+`;
+
+
 const ContactList = () => {
   const [loading, setLoading] = useState(true);
   const [contatos, setContatos] = useState([]);
@@ -284,15 +310,13 @@ const ContactList = () => {
                 Adicionar Contato
               </Button>
 
-              {/* Ícone de notificações */}
-              <NotificationBell
-                onClick={() => {
-                  setModalSolicitacoesAberto(true);
-                  listarSolicitacoes();
-                }}
-              >
-                🔔
-              </NotificationBell>
+              {/* Ícone de notificações com contador */}
+              <NotificationWrapper onClick={() => setModalSolicitacoesAberto(true)}>
+                <NotificationBell>🔔</NotificationBell>
+                {solicitacoes.length > 0 && (
+                  <NotificationBadge>{solicitacoes.length}</NotificationBadge>
+                )}
+              </NotificationWrapper>
             </div>
           </Header>
 

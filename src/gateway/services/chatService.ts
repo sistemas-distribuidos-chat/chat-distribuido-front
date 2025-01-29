@@ -3,8 +3,13 @@ import IChatRepository from "../repository/chatRepository";
 
 const chatService: IChatRepository = {
 
+  //Groups
+  createGroup: (name: string, members: string[]) => api.post(`/groups/create`, { name, members }),
+  getMembersGroup: (groupId: number) => api.get(`/groups/members?groupId=${groupId}`),
+
   //Messages
   getConversations: (userId: number, contactId: number) => api.get(`/message/conversation?userId=${userId}&contactId=${contactId}`),
+  getConversationsGroup: (groupId: number) => api.get(`/message/group-messages?groupId=${groupId}`),
   sendMessage: (sender: number, recipient: number, isGroup: boolean, message: string) => api.post(`/message/create`, { sender, recipient, isGroup, message }),
 
   //Contacts
