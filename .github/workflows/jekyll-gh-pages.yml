@@ -80,6 +80,9 @@ jobs:
           name: github-pages
           path: ./_site
 
+      - name: Verify artifact contents
+        run: ls -la ./_site
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
