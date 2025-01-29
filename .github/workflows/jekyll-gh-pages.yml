@@ -60,13 +60,19 @@ jobs:
         env:
           GITHUB_PAGES: true
 
-      - name: Check artifact size
+      - name: List all symlinks
+        run: find ./_site -type l -exec ls -l {} \;
+
+      - name: Check large files
+        run: find ./_site -type f -size +100M -exec ls -lh {} \;
+
+      - name: Check total artifact size
         run: du -sh ./_site
 
       - name: Cleanup artifact directory
         run: |
-          find ./_site -type l -delete
-          find ./_site -size +100M -delete
+          find ./_site -type l -delete  # Remove symlinks
+          find ./_site -type f -size +100M -delete  # Remove arquivos maiores que 100MB
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
