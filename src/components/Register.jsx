@@ -1,7 +1,7 @@
-import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import chatService from '../gateway/services/chatService';
 
 const Container = styled.div`
   display: flex;
@@ -85,7 +85,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/api/auth/register', { name, email, password });
+      await chatService.register({ name, email, password });
       navigate('/login');
     } catch (err) {
       console.error(err);

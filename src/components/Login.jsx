@@ -1,8 +1,8 @@
-import axios from "axios";
 import cookies from "nookies";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import chatService from "../gateway/services/chatService";
 
 const Container = styled.div`
   display: flex;
@@ -88,10 +88,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/login",
-        { email, password }
-      );
+      const response = await chatService.login({ email, password });
       // localStorage.setItem("token", response.data.token);
       cookies.set(null, "token-chat", response.data.token, {
         path: "/",

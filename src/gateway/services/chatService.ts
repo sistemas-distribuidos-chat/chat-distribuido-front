@@ -3,6 +3,10 @@ import IChatRepository from "../repository/chatRepository";
 
 const chatService: IChatRepository = {
 
+  //AUTH
+  login: (email: string, password: string) => api.post(`/auth/login`, { email, password }),
+  register: (name: string, email: string, password: string) => api.post(`/auth/register`, { name, email, password }),
+
   //Groups
   createGroup: (name: string, members: string[]) => api.post(`/groups/create`, { name, members }),
   getMembersGroup: (groupId: number) => api.get(`/groups/members?groupId=${groupId}`),

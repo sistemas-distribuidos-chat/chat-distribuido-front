@@ -1,12 +1,14 @@
 import { AxiosPromise } from "axios";
 
 export default interface IChatRepository {
+    //AUTH
+    login(email: string, password: string): AxiosPromise<any>;
+    register(name: string, email: string, password: string): AxiosPromise<any>;
 
     //GROUPS
     createGroup(name: string, members: string[]): AxiosPromise<any>;
     getMembersGroup(groupId: number): AxiosPromise<any>;
 
-    //AUTH
 
     //MESSAGES
     getConversations(userId: number, contactId: number): AxiosPromise<any>;
