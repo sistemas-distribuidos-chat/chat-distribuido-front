@@ -31,8 +31,16 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Install Bundler
+        run: gem install bundler
+
       - name: Install dependencies
-        run: bundle install
+        run: |
+          if [ -f Gemfile ]; then
+            bundle install
+          else
+            echo "No Gemfile found, skipping bundle install."
+          fi
 
       - name: Build with Jekyll
         run: bundle exec jekyll build --destination ./_site
@@ -51,4 +59,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
