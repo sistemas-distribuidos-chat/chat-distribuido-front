@@ -60,6 +60,14 @@ jobs:
         env:
           GITHUB_PAGES: true
 
+      - name: Check artifact size
+        run: du -sh ./_site
+
+      - name: Cleanup artifact directory
+        run: |
+          find ./_site -type l -delete
+          find ./_site -size +100M -delete
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
