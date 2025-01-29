@@ -42,8 +42,17 @@ jobs:
             echo "No Gemfile found, skipping bundle install."
           fi
 
+      - name: Install Jekyll (if Gemfile is missing)
+        run: |
+          if [ ! -f Gemfile ]; then
+            echo "No Gemfile found, installing Jekyll globally..."
+            gem install jekyll
+          fi
+
       - name: Build with Jekyll
         run: bundle exec jekyll build --destination ./_site
+        env:
+          GITHUB_PAGES: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
